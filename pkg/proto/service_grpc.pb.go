@@ -128,7 +128,7 @@ type ServiceServer interface {
 	GetFilesList(context.Context, *GetFilesListRequest) (*GetFilesListResponse, error)
 	UploadFile(Service_UploadFileServer) error
 	DownloadFile(*DownloadFileRequest, Service_DownloadFileServer) error
-	mustEmbedUnimplementedServiceServer()
+	MustEmbedUnimplementedServiceServer()
 }
 
 // UnimplementedServiceServer must be embedded to have forward compatible implementations.
@@ -147,7 +147,7 @@ func (UnimplementedServiceServer) UploadFile(Service_UploadFileServer) error {
 func (UnimplementedServiceServer) DownloadFile(*DownloadFileRequest, Service_DownloadFileServer) error {
 	return status.Errorf(codes.Unimplemented, "method DownloadFile not implemented")
 }
-func (UnimplementedServiceServer) mustEmbedUnimplementedServiceServer() {}
+func (UnimplementedServiceServer) MustEmbedUnimplementedServiceServer() {}
 
 // UnsafeServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to ServiceServer will
