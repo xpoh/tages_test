@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package service;
+
+option go_package = "./proto";
+
+service service {
+  rpc Login(LoginRequest) returns (LoginResponse) {}
+  rpc GetFilesList(GetFilesListRequest) returns (GetFilesListResponse) {}
+  rpc UploadFile(stream UploadFileRequest) returns (UploadFileResponse) {}
+  rpc DownloadFile(DownloadFileRequest) returns (stream DownloadFileResponse) {}
+}
+
+message LoginRequest {
+  string user = 1;
+  string pass = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+}
+
+message GetFilesListRequest {
+  string token = 1;
+}
+
+message GetFilesListResponse {
+  string files = 1;
+}
+
+message UploadFileRequest {
+  string token = 1;
+}
+
+message UploadFileResponse {
+  string result = 1;
+}
+
+message DownloadFileRequest {
+  string token = 1;
+}
+
+message DownloadFileResponse {
+  bytes file = 1;
+}
+
