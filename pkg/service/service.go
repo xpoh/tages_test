@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/xpoh/tages_test/pkg/login"
 	pb "github.com/xpoh/tages_test/pkg/proto"
 	"google.golang.org/grpc"
 	"log"
@@ -10,10 +11,17 @@ import (
 
 type Server struct {
 	pb.UnimplementedServiceServer
+	lg login.ServiceLogin
 }
 
 func (s Server) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
-	r := pb.LoginResponse{Token: request.User + request.Pass}
+	token, err := s.lg.GetToken(request.User, request.Pass)
+
+	if err != nil {
+		return nil, err
+	}
+
+	r := pb.LoginResponse{Token: token}
 	return &r, nil
 }
 

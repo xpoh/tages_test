@@ -15,6 +15,8 @@ func TestServer_Login(t *testing.T) {
 	go s.Run()
 	time.Sleep(1 * time.Second)
 
+	s.lg.AddUser("test", "test")
+
 	conn, err := grpc.Dial(":50005", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("can not connect with cacher %v", err)
@@ -39,7 +41,7 @@ func TestServer_Login(t *testing.T) {
 					Pass: "test",
 				},
 			},
-			want:    &pb.LoginResponse{Token: "testtest"},
+			want:    &pb.LoginResponse{Token: "dGVzdHRlc3TaOaPuXmtLDTJVv--VYBiQr9gHCQ=="},
 			wantErr: false,
 		},
 	}
