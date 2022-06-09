@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/xpoh/tages_test/pkg/filestorage"
 	"github.com/xpoh/tages_test/pkg/login"
 	pb "github.com/xpoh/tages_test/pkg/proto"
 	"google.golang.org/grpc"
@@ -11,7 +12,8 @@ import (
 
 type Server struct {
 	pb.UnimplementedServiceServer
-	lg login.ServiceLogin
+	lg      login.ServiceLogin
+	storage filestorage.ImMemoryLocalStorage
 }
 
 func (s Server) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
@@ -26,8 +28,7 @@ func (s Server) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginR
 }
 
 func (s Server) GetFilesList(ctx context.Context, request *pb.GetFilesListRequest) (*pb.GetFilesListResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	list, err := s.storage.GetFileList(request.User)
 }
 
 func (s Server) UploadFile(server pb.Service_UploadFileServer) error {

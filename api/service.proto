@@ -21,7 +21,8 @@ message LoginResponse {
 }
 
 message GetFilesListRequest {
-  string token = 1;
+  string user = 1;
+  string token = 2;
 }
 
 message GetFilesListResponse {
@@ -29,7 +30,8 @@ message GetFilesListResponse {
 }
 
 message UploadFileRequest {
-  string token = 1;
+  string user = 1;
+  string token = 2;
 }
 
 message UploadFileResponse {
@@ -37,7 +39,8 @@ message UploadFileResponse {
 }
 
 message DownloadFileRequest {
-  string token = 1;
+  string user = 1;
+  string token = 2;
 }
 
 message DownloadFileResponse {
