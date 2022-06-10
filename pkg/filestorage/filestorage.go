@@ -35,6 +35,9 @@ func (f WriteFileError) Error() string {
 }
 
 func (i *ImMemoryLocalStorage) PutFile(user string, filename string, file []byte) error {
+	if i.files == nil {
+		i.files = make([]FileInStorageInfo, 0)
+	}
 	if err := os.WriteFile(user+"-"+filename, file, os.ModePerm); err != nil {
 		return err
 	}
@@ -51,7 +54,7 @@ func (i *ImMemoryLocalStorage) PutFile(user string, filename string, file []byte
 func (i *ImMemoryLocalStorage) GetFile(user string, filename string) ([]byte, error) {
 	for _, file := range i.files {
 		if file.user == user && file.Name == filename {
-			if f, err := os.ReadFile(file.Path); err != nil {
+			if f, err := os.ReadFile(file.Path); err == nil {
 				return f, nil
 			}
 		}
