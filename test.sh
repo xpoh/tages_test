@@ -1,0 +1,1 @@
+go test -v github.com/xpoh/tages_test/pkg/service
