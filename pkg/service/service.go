@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/xpoh/tages_test/pkg/filestorage"
 	"github.com/xpoh/tages_test/pkg/login"
 	pb "github.com/xpoh/tages_test/pkg/proto"
@@ -16,6 +17,31 @@ type Server struct {
 	storage filestorage.ImMemoryLocalStorage
 }
 
+func (s Server) UploadFile(ctx context.Context, request *pb.UploadFileRequest) (*pb.UploadFileResponse, error) {
+	user := request.User
+	token := request.Token
+	if !s.lg.Auth(user, token) {
+		return nil, login.NotAuthError{}
+	}
+	if err := s.storage.PutFile(request.User, request.Filename, request.Data); err != nil {
+		return nil, err
+	}
+	return &pb.UploadFileResponse{Result: "Ok"}, nil
+}
+
+func (s Server) DownloadFile(ctx context.Context, request *pb.DownloadFileRequest) (*pb.DownloadFileResponse, error) {
+	user := request.User
+	token := request.Token
+	if !s.lg.Auth(user, token) {
+		return nil, login.NotAuthError{}
+	}
+	data, err := s.storage.GetFile(request.User, request.Filename)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.DownloadFileResponse{File: data}, nil
+}
+
 func (s Server) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
 	token, err := s.lg.GetToken(request.User, request.Pass)
 
@@ -28,20 +54,22 @@ func (s Server) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginR
 }
 
 func (s Server) GetFilesList(ctx context.Context, request *pb.GetFilesListRequest) (*pb.GetFilesListResponse, error) {
-	list, err := s.storage.GetFileList(request.User)
+	user := request.User
+	token := request.Token
+	if !s.lg.Auth(user, token) {
+		return nil, login.NotAuthError{}
+	}
+	list, _ := s.storage.GetFileList(request.User)
+	marshal, err := json.Marshal(list)
+	if err != nil {
+		return nil, err
+	}
+
+	r := pb.GetFilesListResponse{Files: string(marshal)}
+	return &r, nil
 }
 
-func (s Server) UploadFile(server pb.Service_UploadFileServer) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s Server) DownloadFile(request *pb.DownloadFileRequest, server pb.Service_DownloadFileServer) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s Server) mustEmbedUnimplementedServiceServer() {
+func (s Server) MustEmbedUnimplementedServiceServer() {
 	//TODO implement me
 	panic("implement me")
 }

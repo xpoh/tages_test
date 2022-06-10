@@ -8,6 +8,7 @@ import (
 type Loginer interface {
 	GetToken(user, pass string) (string, error)
 	AddUser(user, pass string) error
+	Auth(user, token string) bool
 }
 
 type ServiceLogin struct {
@@ -24,6 +25,21 @@ type UserNotFindError struct{}
 
 func (u UserNotFindError) Error() string {
 	return "User user not find !!!"
+}
+
+type NotAuthError struct{}
+
+func (u NotAuthError) Error() string {
+	return "Not Auth error"
+}
+
+func (s *ServiceLogin) Auth(user, token string) bool {
+	if t, ok := s.userStorage[user]; ok {
+		if t == token {
+			return true
+		}
+	}
+	return false
 }
 
 func (s *ServiceLogin) AddUser(user, pass string) error {

@@ -7,8 +7,8 @@ option go_package = "./proto";
 service service {
   rpc Login(LoginRequest) returns (LoginResponse) {}
   rpc GetFilesList(GetFilesListRequest) returns (GetFilesListResponse) {}
-  rpc UploadFile(stream UploadFileRequest) returns (UploadFileResponse) {}
-  rpc DownloadFile(DownloadFileRequest) returns (stream DownloadFileResponse) {}
+  rpc UploadFile(UploadFileRequest) returns (UploadFileResponse) {}
+  rpc DownloadFile(DownloadFileRequest) returns (DownloadFileResponse) {}
 }
 
 message LoginRequest {
@@ -30,8 +30,10 @@ message GetFilesListResponse {
 }
 
 message UploadFileRequest {
-  string user = 1;
+  string user  = 1;
   string token = 2;
+  string filename = 3;
+  bytes  data  = 4;
 }
 
 message UploadFileResponse {
@@ -41,6 +43,7 @@ message UploadFileResponse {
 message DownloadFileRequest {
   string user = 1;
   string token = 2;
+  string filename = 3;
 }
 
 message DownloadFileResponse {
